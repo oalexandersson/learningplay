@@ -1,38 +1,63 @@
 package controllers;
 
-import models.Task;
+import models.User;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import views.html.*;
 
 public class Application extends Controller {
 
-	static Form<Task> taskForm = form(Task.class);
-	
+    public static class Login {
+        
+        public String email;
+        public String password;
+        
+        public String validate() {
+            if(User.authenticate(email, password) == null) {
+                return "Invalid user or password";
+            }
+            return null;
+        }
+        
+    }
+
+    /**
+     * Login page.
+     */
+    public static Result login() {
+        return ok(
+            login.render(form(Login.class))
+        );
+    }
+    
+    /**
+     * Handle login form submission.
+     */
+    public static Result authenticate() {
+        Form<Login> loginForm = form(Login.class).bindFromRequest();
+        if(loginForm.hasErrors()) {
+            return badRequest(login.render(loginForm));
+        } else {
+            session("email", loginForm.get().email);
+            return redirect(
+                routes.Tasks.index()
+            );
+        }
+    }
+
+    /**
+     * Logout and clean the session.
+     */
+    public static Result logout() {
+        session().clear();
+        flash("success", "You've been logged out");
+        return redirect(
+            routes.Application.login()
+        );
+    }
+
 	public static Result index() {
-		return redirect(routes.Application.tasks());
-	}
-
-	public static Result tasks() {
-		return ok(
-				views.html.index.render(Task.all(), taskForm)
-			);
-	}
-
-	public static Result newTask() {
-		Form<Task> filledForm = taskForm.bindFromRequest();
-		if(filledForm.hasErrors()) {
-			return badRequest(
-					views.html.index.render(Task.all(), filledForm)
-				);
-		} else {
-			Task.create(filledForm.get());
-			return redirect(routes.Application.tasks());
-		}
-	}
-
-	public static Result deleteTask(Long id) {
-		Task.delete(id);
-		return redirect(routes.Application.tasks());
+		return redirect(routes.Tasks.index());
 	}
 }

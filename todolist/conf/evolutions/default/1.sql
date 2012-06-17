@@ -10,10 +10,10 @@ create table task (
 ;
 
 create table user (
-  id                        bigint not null,
-  login                     varchar(255),
+  email                     varchar(255) not null,
   password                  varchar(255),
-  constraint pk_user primary key (id))
+  is_admin                  boolean,
+  constraint pk_user primary key (email))
 ;
 
 create sequence task_seq;

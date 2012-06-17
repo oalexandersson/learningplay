@@ -1,0 +1,45 @@
+@(users: List[User], taskForm: Form[User])
+
+@import helper._
+
+<html>
+<head>
+</head>
+<body>
+
+<h1>@users.size() user(s)</h1>
+    
+    <ul>
+        @for(user <- users) {
+            <li>
+                @user.email
+                @if(user.isAdmin) {
+                    (admin)
+                }
+                
+                @form(routes.Users.delete(user.email)) {
+                    <input type="submit" value="Delete">
+                }
+            </li>
+        }
+    </ul>
+    
+    <h2>Add a new user</h2>
+    
+    @form(routes.Users.create()) {
+
+        @if(taskForm.hasGlobalErrors) { 
+            <p class="error">
+                @taskForm.globalError.message
+            </p>
+        }
+
+        @inputText(taskForm("email"))
+        @inputPassword(taskForm("password"))
+        @input(taskForm("isAdmin")) { (id, name, value, args) =>
+            <input type="checkbox" is="@id" name="@name" ${user.isAdmin ? 'checked':''}  />
+        }
+        <input type="submit" value="Create">
+    }
+</body>
+</html>

@@ -4,35 +4,51 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.validation.Constraint;
 
-import play.data.validation.Constraints.Required;
+import play.data.validation.Constraints;
+import play.data.validation.Constraints.Email;
 import play.db.ebean.Model;
 
 @Entity
 public class User extends Model {
 	@Id
-	Long id;
+	@Constraints.Required
+	@Constraints.Email
+	public String email;
 	
-	@Required
-	String login;
+	@Constraints.Required
+	public String password;
 	
-	@Required
-	String password;
+	@Constraints.Required
+	public Boolean isAdmin;
 	
-	public static Finder<Long,User> find = new Finder(Long.class, User.class);
+	public static Finder<String,User> find = new Finder(String.class, User.class);
 	
 	public static List<User> all()
 	{
 		return find.all();
 	}
 	
-	public static void create(Task task)
+	public static void create(User user)
 	{
-		task.save();
+		user.save();
 	}
 	
-	public static void delete(Long id)
+	public static void deleteByEmail(String email)
 	{
-		find.ref(id).delete();
+		find.ref(email).delete();
+	}
+	
+	public static User authenticate(String email, String password)
+	{
+		return find.where()
+	            .eq("email", email)
+	            .eq("password", password)
+	            .findUnique();
+	}
+	
+	public User() {
+		isAdmin = new Boolean(false);
 	}
 }
