@@ -4,7 +4,7 @@ import models.User;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.*;
+import views.html.login;
 
 public class Application extends Controller {
 
@@ -12,11 +12,15 @@ public class Application extends Controller {
         
         public String email;
         public String password;
+        public boolean isAdmin;
         
         public String validate() {
-            if(User.authenticate(email, password) == null) {
+        	User user = User.authenticate(email, password);
+            if(user == null) {
                 return "Invalid user or password";
             }
+            
+            isAdmin = user.isAdmin;
             return null;
         }
         
@@ -40,12 +44,15 @@ public class Application extends Controller {
             return badRequest(login.render(loginForm));
         } else {
             session("email", loginForm.get().email);
+            if(loginForm.get().isAdmin) {
+            	session("admin", "true");
+            }
             return redirect(
                 routes.Tasks.index()
             );
         }
     }
-
+    
     /**
      * Logout and clean the session.
      */

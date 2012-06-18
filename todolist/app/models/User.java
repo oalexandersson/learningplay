@@ -20,7 +20,6 @@ public class User extends Model {
 	@Constraints.Required
 	public String password;
 	
-	@Constraints.Required
 	public Boolean isAdmin;
 	
 	public static Finder<String,User> find = new Finder(String.class, User.class);

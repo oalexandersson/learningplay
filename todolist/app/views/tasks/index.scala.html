@@ -1,9 +1,10 @@
-@(tasks: List[Task], taskForm: Form[Task])
+@(tasks: List[Task], user: User, taskForm: Form[Task])
 
 @import helper._
 
 @main("Todo list") {
 
+    Logged in as @user.email (<a href="@routes.Application.logout()">Log out</a>)
     <h1>@tasks.size() task(s)</h1>
     
     <ul>
@@ -20,7 +21,7 @@
     
     <h2>Add a new task</h2>
     
-    @form(routes.Tasks.create()) {
+    @form(routes.Tasks.add()) {
 
         @inputText(taskForm("label"))
         

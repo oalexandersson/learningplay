@@ -1,0 +1,27 @@
+@(newAdminForm: Form[Installation.NewAdminUser])
+
+@import helper._
+
+<html>
+<head>
+</head>
+<body>
+
+<h1>Welcome to todolist</h1>
+    
+    <h2>Please create an admin user.</h2>
+    
+    @form(routes.Installation.addAdminUser()) {
+
+        @if(newAdminForm.hasGlobalErrors) { 
+            <p>
+                @newAdminForm.globalError.message
+            </p>
+        }
+
+        @inputText(newAdminForm("email"))
+        @inputPassword(newAdminForm("password"))
+        <input type="submit" value="Create">
+    }
+</body>
+</html>

@@ -4,8 +4,10 @@ import models.User;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
+import play.mvc.Security;
 import views.html.admin.*;
 
+@Security.Authenticated(AdminSecured.class)
 public class Users extends Controller {
 
 	public static Result index() {
@@ -14,7 +16,7 @@ public class Users extends Controller {
 			);
 	}
 
-	public static Result create() {
+	public static Result add() {
 		Form<User> filledForm = form(User.class).bindFromRequest();
 		if(filledForm.hasErrors()) {
 			return badRequest(
