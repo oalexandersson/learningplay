@@ -1,0 +1,21 @@
+@(links: List[Link], user: User, linkForm: Form[(String,String)])
+
+@import helper._
+
+@main("Linxy") {
+    
+    @user.email (<a href="@routes.Application.logout">Log out</a>)
+    
+    <ul>
+    @links.map { link =>
+        <li><a href="@link.url">@link.title</a> @form(routes.Links.delete(link.id.get)) {<input type="submit" value="Delete"/>}
+    }
+    </ul>
+    
+    @form(routes.Links.add) {
+        @inputText(linkForm("title"))
+        @inputText(linkForm("url"))
+        <input type="submit" value="Add" />
+    }
+    
+}
